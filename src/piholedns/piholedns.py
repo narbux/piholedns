@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 """Copyright (C) 2025 Marnix Enthoven <mail@marnixenthoven.nl>
 
 ---
@@ -102,7 +100,7 @@ variables `PIHOLEDNS_API_URL` and `PIHOLEDNS_PASSWORD`.""",
     return parser.parse_args()
 
 
-def main():
+def main() -> int:
     args = get_arguments()
 
     if not PIHOLEDNS_API_URL or not PIHOLEDNS_PASSWORD:
@@ -116,6 +114,8 @@ def main():
         add_cname(domain=args.domain, target=args.target, session=session)
         logout(session)
 
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
