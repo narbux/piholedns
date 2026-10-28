@@ -14,7 +14,7 @@ __version__ = "0.1.0"
 import argparse
 import os
 
-import httpx
+import httpx2
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -28,15 +28,13 @@ def authenticate(password: str) -> str:
 
     :param password: password of pihole install
     :returns: str with session ID"""
-    with httpx.Client() as client:
-        result = client.post(
-            f"{PIHOLEDNS_API_URL}/auth", json={"password": password}
-        )
+    with httpx2.Client() as client:
+        result = client.post(f"{PIHOLEDNS_API_URL}/auth", json={"password": password})
         result.raise_for_status()
         return result.json()["session"]["sid"]
 
 
-def logout(session: httpx.Client) -> None:
+def logout(session: httpx2.Client) -> None:
     """Invalidates the authenticated session ID. Calling this function is
     not necessary as the session ID has a limited time validity. But nice
     for cleanup."""
@@ -44,10 +42,10 @@ def logout(session: httpx.Client) -> None:
     result.raise_for_status()
 
 
-def get_cname_records(session: httpx.Client) -> list[str]:
+def get_cname_records(session: httpx2.Client) -> list[str]:
     """Retrieve all registered CNAME records in pihole.
 
-    :param session: authenticated httpx.Client object
+    :param session: authenticated httpx2.Client object
 
     :returns: A list of CNAMEs that are formatted as '$domain,$target'.
     E.g.: `pihole.intranet.domain.com,proxy.internal.domain.com`"""
@@ -57,10 +55,10 @@ def get_cname_records(session: httpx.Client) -> list[str]:
 
 
 # TODO: Decide if to include this function
-# def get_hosts(session: httpx.Client) -> list[str]:
+# def get_hosts(session: httpx2.Client) -> list[str]:
 #     """Retrieve all registered dns hosts in pihole.
 
-#     :param session: authenticated httpx.Client object
+#     :param session: authenticated httpx2.Client object
 
 #     :returns: A list of strings that are formatted as '$ipaddress $domain'.
 #     E.g.: `192.168.1.45 server.internal.domain.com`"""
@@ -69,14 +67,14 @@ def get_cname_records(session: httpx.Client) -> list[str]:
 #     return result.json()["config"]["dns"]["hosts"]
 
 
-def add_cname(domain: str, target: str, session: httpx.Client) -> None:
+def add_cname(domain: str, target: str, session: httpx2.Client) -> None:
     """Function to add CNAME to pihole. This first retrieves the config from
     pihole and adds the new CNAME to that list. Than it re-uploads the config
     to pihole.
 
     :param domain: new domain to add as CNAME to pihole
     :param target: target domain where CNAME record should point to
-    :param session: authenticated httpx.Client object
+    :param session: authenticated httpx2.Client object
     """
     cname_list = get_cname_records(session)
     new_cname = f"{domain},{target}"
@@ -114,7 +112,7 @@ def main():
 
     sid = authenticate(PIHOLEDNS_PASSWORD)
 
-    with httpx.Client(headers={"X-FTL-SID": sid}) as session:
+    with httpx2.Client(headers={"X-FTL-SID": sid}) as session:
         add_cname(domain=args.domain, target=args.target, session=session)
         logout(session)
 

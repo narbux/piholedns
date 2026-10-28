@@ -5,6 +5,6 @@ description = "This script is used to add CNAME entries to a pihole for DNS reso
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "httpx==0.28.1",
+    "httpx2>=2.16.0",
     "python-dotenv==1.2.2",
 ]
