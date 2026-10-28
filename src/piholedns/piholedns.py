@@ -18,6 +18,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 PIHOLEDNS_API_URL = os.environ.get("PIHOLEDNS_API_URL", None)
+if PIHOLEDNS_API_URL:
+    PIHOLEDNS_API_URL = PIHOLEDNS_API_URL.rstrip("/")
 PIHOLEDNS_PASSWORD = os.environ.get("PIHOLEDNS_PASSWORD", None)
 
 
