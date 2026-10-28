@@ -9,7 +9,7 @@ be used in a internal homelab to add new services to the DNS. Set the environmen
 variables `PIHOLEDNS_API_URL` and `PIHOLEDNS_PASSWORD`.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 import argparse
 import os
